@@ -1,9 +1,11 @@
+import { MediaList } from 'src/media-list/entities/media-list.entity';
 import { User } from 'src/users/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -18,6 +20,9 @@ export class List {
 
   @ManyToOne(() => User, (user) => user.lists)
   user: User;
+
+  @OneToMany(() => MediaList, (mediaList) => mediaList.list)
+  medias: MediaList[];
 
   @CreateDateColumn({
     type: 'timestamp',

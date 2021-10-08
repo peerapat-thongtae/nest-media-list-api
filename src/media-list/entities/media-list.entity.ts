@@ -1,5 +1,5 @@
+import { List } from 'src/lists/entities/list.entity';
 import { Media } from 'src/medias/entities/media.entity';
-import { User } from 'src/users/entities/user.entity';
 import {
   CreateDateColumn,
   Entity,
@@ -11,7 +11,7 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class Todo {
+export class MediaList {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -19,8 +19,8 @@ export class Todo {
   @JoinColumn()
   media: Media;
 
-  @ManyToOne(() => User, (user) => user.todos)
-  user: User;
+  @ManyToOne(() => List, (list) => list.medias)
+  list: List;
 
   @CreateDateColumn({
     type: 'timestamp',

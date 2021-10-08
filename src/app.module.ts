@@ -8,10 +8,13 @@ import { TodoModule } from './todo/todo.module';
 import { Todo } from './todo/entities/todo.entity';
 import { ListsModule } from './lists/lists.module';
 import { List } from './lists/entities/list.entity';
+import { MediaListModule } from './media-list/media-list.module';
+import { MediasModule } from './medias/medias.module';
+import { Media } from './medias/entities/media.entity';
+import { MediaList } from './media-list/entities/media-list.entity';
 
 @Module({
   imports: [
-    UsersModule,
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: 'localhost',
@@ -19,11 +22,14 @@ import { List } from './lists/entities/list.entity';
       username: 'root',
       password: '',
       database: 'media-list',
-      entities: [User, Todo, List],
+      entities: [User, Todo, List, MediaList, Media],
       synchronize: true,
     }),
+    UsersModule,
     TodoModule,
     ListsModule,
+    MediaListModule,
+    MediasModule,
   ],
   controllers: [AppController],
   providers: [AppService],
