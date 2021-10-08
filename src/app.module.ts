@@ -6,6 +6,8 @@ import { User } from './users/entities/user.entity';
 import { UsersModule } from './users/users.module';
 import { TodoModule } from './todo/todo.module';
 import { Todo } from './todo/entities/todo.entity';
+import { ListsModule } from './lists/lists.module';
+import { List } from './lists/entities/list.entity';
 
 @Module({
   imports: [
@@ -17,10 +19,11 @@ import { Todo } from './todo/entities/todo.entity';
       username: 'root',
       password: '',
       database: 'media-list',
-      entities: [User, Todo],
+      entities: [User, Todo, List],
       synchronize: true,
     }),
     TodoModule,
+    ListsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

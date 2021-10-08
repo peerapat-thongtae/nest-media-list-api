@@ -1,3 +1,4 @@
+import { List } from 'src/lists/entities/list.entity';
 import { Todo } from 'src/todo/entities/todo.entity';
 import {
   PrimaryGeneratedColumn,
@@ -46,6 +47,9 @@ export class User {
 
   @OneToMany(() => Todo, (todo) => todo.user)
   todos: Todo[];
+
+  @OneToMany(() => List, (list) => list.user)
+  lists: List[];
 
   @CreateDateColumn({
     type: 'timestamp',
