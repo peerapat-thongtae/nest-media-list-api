@@ -31,6 +31,9 @@ export class User {
   @Column({ unique: true, nullable: true })
   username: string;
 
+  @Column({ nullable: true })
+  birthday: Date;
+
   @Column({
     type: 'enum',
     enum: Role,
