@@ -11,6 +11,7 @@ export interface ResponseReturn<T> {
   statusCode: number;
   message: any;
   data: T;
+  [key: string]: any;
 }
 
 @Injectable()
@@ -28,10 +29,9 @@ export class TransformInterceptor<T>
     }
     return next.handle().pipe(
       map((data) => ({
-        statusCode: statusCode,
-        message: data.message || 'Success',
+        statusCode,
         success,
-        data: data.result,
+        ...data,
       })),
     );
   }

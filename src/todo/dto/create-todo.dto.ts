@@ -1,1 +1,12 @@
-export class CreateTodoDto {}
+import { IsString, IsEnum, IsISO8601, IsOptional } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { MediaType } from '../enum/mediaType.enum';
+
+export class CreateTodoDto {
+  @ApiProperty()
+  readonly tmdbId: number;
+
+  @ApiProperty()
+  @IsEnum(MediaType)
+  readonly mediaType: MediaType;
+}

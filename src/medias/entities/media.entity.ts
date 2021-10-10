@@ -1,5 +1,4 @@
 import { MediaType } from 'src/todo/enum/mediaType.enum';
-import { TodoStatus } from 'src/todo/enum/todoStatus.enum';
 import {
   Column,
   CreateDateColumn,
@@ -22,13 +21,6 @@ export class Media {
     default: MediaType.MOVIE,
   })
   mediaType: MediaType;
-
-  @Column({
-    type: 'enum',
-    enum: TodoStatus,
-    default: TodoStatus.WATCHLIST,
-  })
-  status: TodoStatus;
 
   @CreateDateColumn({
     type: 'timestamp',

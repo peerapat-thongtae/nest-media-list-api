@@ -1,15 +1,37 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Req,
+  UseInterceptors,
+} from '@nestjs/common';
 import { TodoService } from './todo.service';
-import { CreateTodoDto } from './dto/create-todo.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
+import { AuthGuard } from '@nestjs/passport';
+import { ApiBearerAuth } from '@nestjs/swagger';
+import { MediasService } from 'src/medias/medias.service';
+import { TransformInterceptor } from 'src/interceptors/transform.interceptor';
+import { AddTodoRequestDto } from './dto/add-todo-request.dto';
 
 @Controller('todo')
+@UseInterceptors(TransformInterceptor)
 export class TodoController {
-  constructor(private readonly todoService: TodoService) {}
+  constructor(
+    private readonly todoService: TodoService,
+    private readonly mediaService: MediasService,
+  ) {}
 
-  @Post()
-  create(@Body() createTodoDto: CreateTodoDto) {
-    return this.todoService.create(createTodoDto);
+  @Post('add')
+  @UseGuards(AuthGuard('jwt'))
+  @ApiBearerAuth()
+  async create(@Req() request, @Body() todoRequest: AddTodoRequestDto) {
+    const media = await this.mediaService.create(todoRequest);
+    return { message: 'add todo', media };
   }
 
   @Get()

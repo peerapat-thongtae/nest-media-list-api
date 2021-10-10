@@ -1,8 +1,9 @@
-import { IsString, IsEnum } from 'class-validator';
+import { IsString, IsEnum, IsISO8601, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { MediaType } from 'src/todo/enum/mediaType.enum';
+import { TodoStatus } from 'src/todo/enum/todoStatus.enum';
 
-export class CreateMediaDto {
+export class AddTodoRequestDto {
   @ApiProperty()
   readonly id: number;
 
@@ -13,4 +14,8 @@ export class CreateMediaDto {
   @ApiProperty()
   @IsString()
   readonly mediaName: string;
+
+  @ApiProperty()
+  @IsEnum(TodoStatus)
+  readonly status: TodoStatus;
 }

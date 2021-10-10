@@ -1,6 +1,7 @@
 import { Media } from 'src/medias/entities/media.entity';
 import { User } from 'src/users/entities/user.entity';
 import {
+  Column,
   CreateDateColumn,
   Entity,
   JoinColumn,
@@ -9,6 +10,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { TodoStatus } from '../enum/todoStatus.enum';
 
 @Entity()
 export class Todo {
@@ -21,6 +23,13 @@ export class Todo {
 
   @ManyToOne(() => User, (user) => user.todos)
   user: User;
+
+  @Column({
+    type: 'enum',
+    enum: TodoStatus,
+    default: TodoStatus.WATCHLIST,
+  })
+  status: TodoStatus;
 
   @CreateDateColumn({
     type: 'timestamp',
