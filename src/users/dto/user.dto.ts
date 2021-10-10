@@ -17,6 +17,9 @@ export class UserDto {
   readonly lastName: string;
 
   @ApiProperty()
+  readonly username: string;
+
+  @ApiProperty()
   readonly gender: Gender;
 
   @ApiProperty()
@@ -30,6 +33,7 @@ export class UserDto {
     this.email = user.email;
     this.firstName = user.firstName;
     this.lastName = user.lastName;
+    this.username = user.username;
     this.gender = user.gender;
     this.birthday = user.birthday;
     this.role = user.role;

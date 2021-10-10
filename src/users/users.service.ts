@@ -1,12 +1,14 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { genSalt, hash } from 'bcrypt';
+import { compare, genSalt, hash } from 'bcrypt';
 import { sign } from 'jsonwebtoken';
 import { Repository } from 'typeorm';
 import { JwtPayload } from './auth/jwt-payload.model';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UserLoginRequestDto } from './dto/user-login-request.dto';
 import { UserLoginResponseDto } from './dto/user-login-response.dto';
+import { UserDto } from './dto/user.dto';
 import { User } from './entities/user.entity';
 
 @Injectable()
@@ -38,6 +40,46 @@ export class UsersService {
     } catch (err) {
       throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+  }
+
+  async getUser(id: string) {
+    const user = await this.usersRepository.findOne(id);
+    if (!user) {
+      throw new HttpException(
+        'User with given id not found',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    return new UserDto(user);
+  }
+
+  async getUserByEmail(email: string) {
+    const user = await this.usersRepository.findOne({ email: email });
+    return user;
+  }
+
+  async login(userLoginRequestDto: UserLoginRequestDto) {
+    const email = userLoginRequestDto.email;
+    const password = userLoginRequestDto.password;
+
+    const user = await this.getUserByEmail(email);
+    if (!user) {
+      throw new HttpException(
+        'Invalid email or password.',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const isMatch = await compare(password, user.password);
+    if (!isMatch) {
+      throw new HttpException(
+        'Invalid email or password.',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const token = await this.signToken(user);
+    return new UserLoginResponseDto(user, token);
   }
 
   findAll() {
