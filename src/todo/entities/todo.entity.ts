@@ -18,11 +18,18 @@ export class Todo {
   id: number;
 
   @OneToOne(() => Media)
-  @JoinColumn()
+  @JoinColumn({ name: 'mediaId' })
   media: Media;
 
+  @Column()
+  mediaId: number;
+
   @ManyToOne(() => User, (user) => user.todos)
+  @JoinColumn({ name: 'userId' })
   user: User;
+
+  @Column()
+  userId: number;
 
   @Column({
     type: 'enum',

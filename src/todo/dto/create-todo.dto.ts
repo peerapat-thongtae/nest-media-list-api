@@ -1,4 +1,4 @@
-import { IsString, IsEnum, IsISO8601, IsOptional } from 'class-validator';
+import { IsEnum } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { MediaType } from '../enum/mediaType.enum';
 

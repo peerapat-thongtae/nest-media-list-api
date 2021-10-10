@@ -30,8 +30,9 @@ export class TodoController {
   @UseGuards(AuthGuard('jwt'))
   @ApiBearerAuth()
   async create(@Req() request, @Body() todoRequest: AddTodoRequestDto) {
-    const media = await this.mediaService.create(todoRequest);
-    return { message: 'add todo', media };
+    await this.mediaService.create(todoRequest);
+    const todo = await this.todoService.create(todoRequest, request.user.id);
+    return { message: 'add todo', todo };
   }
 
   @Get()
