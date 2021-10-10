@@ -16,13 +16,12 @@ export class TodoService {
   ) {}
   async create(addTodoRequestDto: AddTodoRequestDto, userId: number) {
     const todo = await this.todosRepository.findOne({
-      where: { user: userId, media: addTodoRequestDto.id },
+      where: { userId: userId, mediaId: addTodoRequestDto.id },
     });
     if (todo) {
-      await this.todosRepository.update(todo.id, {
-        status: addTodoRequestDto.status,
-      });
-
+      console.log(todo.id);
+      todo.status = addTodoRequestDto.status;
+      await this.todosRepository.save(todo);
       return todo;
     }
     const newTodo = new Todo();
