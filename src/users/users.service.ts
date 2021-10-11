@@ -43,7 +43,9 @@ export class UsersService {
   }
 
   async getUser(id: string) {
-    const user = await this.usersRepository.findOne(id);
+    const user = await this.usersRepository.findOne(id, {
+      relations: ['todos'],
+    });
     if (!user) {
       throw new HttpException(
         'User with given id not found',

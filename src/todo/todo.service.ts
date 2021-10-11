@@ -27,6 +27,7 @@ export class TodoService {
     const newTodo = new Todo();
     newTodo.mediaId = addTodoRequestDto.id;
     newTodo.userId = userId;
+    newTodo.status = addTodoRequestDto.status;
 
     const todoData = await this.todosRepository.save(newTodo);
     return todoData;

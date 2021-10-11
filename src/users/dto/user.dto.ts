@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Todo } from 'src/todo/entities/todo.entity';
 import { User } from '../entities/user.entity';
 import { Gender } from '../enum/gender.enum';
 import { Role } from '../enum/role.enum';
@@ -28,6 +29,9 @@ export class UserDto {
   @ApiProperty()
   readonly role: Role;
 
+  @ApiProperty()
+  readonly todos: Todo[];
+
   constructor(user: User) {
     this.id = user.id;
     this.email = user.email;
@@ -37,5 +41,6 @@ export class UserDto {
     this.gender = user.gender;
     this.birthday = user.birthday;
     this.role = user.role;
+    this.todos = user.todos;
   }
 }

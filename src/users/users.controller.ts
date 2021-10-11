@@ -26,14 +26,15 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post('/register')
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+  async create(@Body() createUserDto: CreateUserDto) {
+    const user = await this.usersService.create(createUserDto);
+    return { message: 'register', user };
   }
 
   @Post('/login')
   async login(@Body() userLoginRequest: UserLoginRequestDto) {
-    const result = await this.usersService.login(userLoginRequest);
-    return { message: 'login success', result };
+    const user = await this.usersService.login(userLoginRequest);
+    return { message: 'login', user };
   }
 
   @Get('me')
@@ -41,8 +42,8 @@ export class UsersController {
   @ApiBearerAuth()
   @ApiOkResponse({ type: UserDto })
   async getUser(@Req() request) {
-    const result = await this.usersService.getUser(request.user.id);
-    return { message: 'Get my user', result };
+    const user = await this.usersService.getUser(request.user.id);
+    return { message: 'Get my user', user };
   }
 
   @Get()
