@@ -1,12 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { MediaDto } from 'src/medias/dto/media.dto';
-import { Media } from 'src/medias/entities/media.entity';
 import { Repository } from 'typeorm';
 import { AddTodoRequestDto } from './dto/add-todo-request.dto';
-import { CreateTodoDto } from './dto/create-todo.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
 import { Todo } from './entities/todo.entity';
+import { MediaType } from './enum/mediaType.enum';
+import { TodoStatus } from './enum/todoStatus.enum';
 
 @Injectable()
 export class TodoService {
@@ -31,6 +30,33 @@ export class TodoService {
 
     const todoData = await this.todosRepository.save(newTodo);
     return todoData;
+  }
+
+  async findUserTodo(userId: number) {
+    const todoData = await this.todosRepository.find({
+      where: { userId: userId },
+    });
+    return todoData;
+  }
+
+  async findUserTodoByStatus(
+    userId: number,
+    mediaType: MediaType,
+    status: TodoStatus,
+  ) {
+    const todos = await this.todosRepository.find({
+      relations: ['media'],
+      where: {
+        userId: userId,
+        status: status,
+        media: {
+          mediaType: mediaType,
+        },
+      },
+      take: 10,
+      skip: 0,
+    });
+    return todos;
   }
 
   findAll() {
