@@ -44,34 +44,34 @@ export class TodoController {
     return { message: 'my todo', todos };
   }
 
-  @Get('mywatchlist/:mediaType')
+  @Get('movie/:status')
   @UseGuards(AuthGuard('jwt'))
-  async myWatchlist(
+  async todoMovie(
     @Req() request,
     @Query() query,
-    @Param('mediaType') mediaType: MediaType,
+    @Param('status') status: TodoStatus,
   ) {
     console.log(query);
     const todos = await this.todoService.findUserTodoByStatus(
       request.user.id,
-      mediaType,
-      TodoStatus.WATCHLIST,
+      MediaType.MOVIE,
+      status,
     );
     return { message: 'get my watchlist', todos };
   }
 
-  @Get('mywatched/:mediaType')
+  @Get('tv/:status')
   @UseGuards(AuthGuard('jwt'))
-  async myWatched(
+  async todoTV(
     @Req() request,
     @Query() query,
-    @Param('mediaType') mediaType: MediaType,
+    @Param('status') status: TodoStatus,
   ) {
     console.log(query);
     const todos = await this.todoService.findUserTodoByStatus(
       request.user.id,
-      mediaType,
-      TodoStatus.WATCHED,
+      MediaType.TV,
+      status,
     );
     return { message: 'get my watched', todos };
   }
