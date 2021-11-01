@@ -29,6 +29,7 @@ import { ConfigModule } from '@nestjs/config';
       database: process.env.DATABASE_NAME,
       entities: [User, Todo, List, MediaList, Media],
       synchronize: true,
+      ssl: { rejectUnauthorized: false },
     }),
     UsersModule,
     TodoModule,
