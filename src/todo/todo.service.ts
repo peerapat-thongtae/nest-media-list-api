@@ -1,14 +1,17 @@
+import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AddTodoRequestDto } from './dto/add-todo-request.dto';
-import { UpdateTodoDto } from './dto/update-todo.dto';
 import { Todo } from './entities/todo.entity';
 import { MediaType } from './enum/mediaType.enum';
 import { TodoStatus } from './enum/todoStatus.enum';
-
 @Injectable()
 export class TodoService {
+  private readonly configService: ConfigService;
+  private readonly httpService: HttpService = new HttpService();
+
   constructor(
     @InjectRepository(Todo)
     private readonly todosRepository: Repository<Todo>,
@@ -18,7 +21,6 @@ export class TodoService {
       where: { userId: userId, mediaId: addTodoRequestDto.id },
     });
     if (todo) {
-      console.log(todo.id);
       todo.status = addTodoRequestDto.status;
       await this.todosRepository.save(todo);
       return todo;
@@ -32,18 +34,37 @@ export class TodoService {
     return todoData;
   }
 
-  async findUserTodo(userId: number) {
+  async findUserTodoAllType(userId: number) {
     const todoData = await this.todosRepository.find({
+      relations: ['media'],
       where: { userId: userId },
     });
     return todoData;
+  }
+
+  async getMedia(type: string, mediaId: number) {
+    const TMDB_API_URL = process.env.TMDB_API_URL;
+    const TMDB_TOKEN = process.env.TMDB_TOKEN;
+
+    const res = await this.httpService
+      .get(`${TMDB_API_URL}/3/${type}/${mediaId}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${TMDB_TOKEN}`,
+        },
+      })
+      .toPromise();
+    return res.data;
   }
 
   async findUserTodoByStatus(
     userId: number,
     mediaType: MediaType,
     status: TodoStatus,
+    query: any = {},
   ) {
+    const page = query.page || 1;
+    const skip = (page - 1) * 20;
     const todos = await this.todosRepository.find({
       relations: ['media'],
       where: {
@@ -53,8 +74,11 @@ export class TodoService {
           mediaType: mediaType,
         },
       },
-      take: 10,
-      skip: 0,
+      order: {
+        updatedAt: 'DESC',
+      },
+      take: 20,
+      skip: skip,
     });
     return todos;
   }
@@ -67,11 +91,22 @@ export class TodoService {
     return `This action returns a #${id} todo`;
   }
 
-  update(id: number, updateTodoDto: UpdateTodoDto) {
-    return `This action updates a #${id} todo`;
-  }
-
   remove(id: number) {
     return `This action removes a #${id} todo`;
+  }
+  async getTVOnAir(userId: number) {
+    const results = await this.findUserTodoAllType(userId);
+    const tvOnTheAir = results
+      .filter((result) => {
+        return (
+          result.media.mediaType === MediaType.TV &&
+          result.media.mediaDetail?.next_episode_to_air?.air_date ===
+            '2022-01-10'
+        );
+      })
+      .map((res) => {
+        return res.media.mediaDetail;
+      });
+    return tvOnTheAir;
   }
 }

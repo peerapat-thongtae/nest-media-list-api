@@ -12,9 +12,14 @@ import { MediaListModule } from './media-list/media-list.module';
 import { MediasModule } from './medias/medias.module';
 import { Media } from './medias/entities/media.entity';
 import { MediaList } from './media-list/entities/media-list.entity';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: `.env`,
+    }),
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: 'localhost',

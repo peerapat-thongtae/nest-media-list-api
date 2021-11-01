@@ -3,7 +3,6 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   UseGuards,
@@ -12,7 +11,6 @@ import {
   Query,
 } from '@nestjs/common';
 import { TodoService } from './todo.service';
-import { UpdateTodoDto } from './dto/update-todo.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { MediasService } from 'src/medias/medias.service';
@@ -40,7 +38,7 @@ export class TodoController {
   @Get('mytodo')
   @UseGuards(AuthGuard('jwt'))
   async findMyTodo(@Req() request) {
-    const todos = await this.todoService.findUserTodo(request.user.id);
+    const todos = await this.todoService.findUserTodoAllType(request.user.id);
     return { message: 'my todo', todos };
   }
 
@@ -51,13 +49,28 @@ export class TodoController {
     @Query() query,
     @Param('status') status: TodoStatus,
   ) {
-    console.log(query);
     const todos = await this.todoService.findUserTodoByStatus(
       request.user.id,
       MediaType.MOVIE,
       status,
+      query,
     );
-    return { message: 'get my watchlist', todos };
+    const results = todos.map((todo) => {
+      return todo.media.mediaDetail;
+    });
+    return {
+      message: `get my movie ${status}`,
+      todos,
+      results,
+      page: query.page,
+    };
+  }
+
+  @Get('tvonair/:userId')
+  // @UseGuards(AuthGuard('jwt'))
+  async userTVOnAir(@Req() request, @Param('userId') userId: number) {
+    const tvOnAir = await this.todoService.getTVOnAir(userId);
+    return { message: `get my tv on air now`, tvOnAir };
   }
 
   @Get('tv/:status')
@@ -67,28 +80,21 @@ export class TodoController {
     @Query() query,
     @Param('status') status: TodoStatus,
   ) {
-    console.log(query);
     const todos = await this.todoService.findUserTodoByStatus(
       request.user.id,
       MediaType.TV,
       status,
+      query,
     );
-    return { message: 'get my watched', todos };
-  }
-
-  @Get()
-  findAll() {
-    return this.todoService.findAll();
+    const results = todos.map((todo) => {
+      return todo.media.mediaDetail;
+    });
+    return { message: `get my tv ${status}`, todos, results, page: query.page };
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.todoService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTodoDto: UpdateTodoDto) {
-    return this.todoService.update(+id, updateTodoDto);
   }
 
   @Delete(':id')

@@ -16,7 +16,6 @@ export class MediasService {
     try {
       const findMedia = await this.findOne(createMediaDto.id);
       if (findMedia) {
-        console.log(findMedia);
         return new MediaDto(findMedia);
       }
       const media = new Media();
