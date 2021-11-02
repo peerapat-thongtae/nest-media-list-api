@@ -7,6 +7,7 @@ import { AddTodoRequestDto } from './dto/add-todo-request.dto';
 import { Todo } from './entities/todo.entity';
 import { MediaType } from './enum/mediaType.enum';
 import { TodoStatus } from './enum/todoStatus.enum';
+import * as dayjs from 'dayjs';
 @Injectable()
 export class TodoService {
   private readonly configService: ConfigService;
@@ -103,7 +104,7 @@ export class TodoService {
         return (
           result.media.mediaType === MediaType.TV &&
           result.media.mediaDetail?.next_episode_to_air?.air_date ===
-            '2022-01-10'
+            dayjs().format('YYYY-MM-DD')
         );
       })
       .map((res) => {
