@@ -1,6 +1,6 @@
 export enum TodoStatus {
-  WATCHLIST = 'WATCHLIST',
-  WATCHING = 'WATCHING',
-  WATCHED = 'WATCHED',
-  WAITING_NEXT_SEASON = 'WAITING_NEXT_SEASON',
+  WATCHLIST = 'watchlist',
+  WATCHING = 'watching',
+  WATCHED = 'watched',
+  WAITING_NEXT_SEASON = 'waiting_next_season',
 }

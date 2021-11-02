@@ -46,6 +46,8 @@ export class TodoService {
     const TMDB_API_URL = process.env.TMDB_API_URL;
     const TMDB_TOKEN = process.env.TMDB_TOKEN;
 
+    console.log(TMDB_API_URL);
+
     const res = await this.httpService
       .get(`${TMDB_API_URL}/3/${type}/${mediaId}`, {
         headers: {
