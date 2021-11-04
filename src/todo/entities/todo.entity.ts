@@ -14,8 +14,8 @@ import { TodoStatus } from '../enum/todoStatus.enum';
 
 @Entity()
 export class Todo {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @OneToOne(() => Media)
   @JoinColumn({ name: 'mediaId' })

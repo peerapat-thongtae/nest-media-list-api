@@ -26,6 +26,7 @@ export class MediasService {
       const mediaData = await this.mediasRepository.save(media);
       return new MediaDto(mediaData);
     } catch (err) {
+      console.log(err);
       throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }

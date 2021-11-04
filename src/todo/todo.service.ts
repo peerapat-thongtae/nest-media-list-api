@@ -18,21 +18,24 @@ export class TodoService {
     private readonly todosRepository: Repository<Todo>,
   ) {}
   async create(addTodoRequestDto: AddTodoRequestDto, userId: number) {
-    const todo = await this.todosRepository.findOne({
-      where: { userId: userId, mediaId: addTodoRequestDto.id },
-    });
-    if (todo) {
-      todo.status = addTodoRequestDto.status;
-      await this.todosRepository.save(todo);
-      return todo;
+    try {
+      const todo = await this.todosRepository.findOne({
+        where: { userId: userId, mediaId: addTodoRequestDto.id },
+      });
+      if (todo) {
+        todo.status = addTodoRequestDto.status;
+        await this.todosRepository.save(todo);
+        return todo;
+      }
+      const newTodo = new Todo();
+      newTodo.mediaId = addTodoRequestDto.id;
+      newTodo.userId = userId;
+      newTodo.status = addTodoRequestDto.status;
+      const todoData = await this.todosRepository.save(newTodo);
+      return todoData;
+    } catch (err) {
+      console.log(err);
     }
-    const newTodo = new Todo();
-    newTodo.mediaId = addTodoRequestDto.id;
-    newTodo.userId = userId;
-    newTodo.status = addTodoRequestDto.status;
-
-    const todoData = await this.todosRepository.save(newTodo);
-    return todoData;
   }
 
   async findUserTodoAllType(userId: number) {
