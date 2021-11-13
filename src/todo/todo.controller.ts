@@ -18,6 +18,7 @@ import { TransformInterceptor } from 'src/interceptors/transform.interceptor';
 import { AddTodoRequestDto } from './dto/add-todo-request.dto';
 import { MediaType } from './enum/mediaType.enum';
 import { TodoStatus } from './enum/todoStatus.enum';
+import { query } from 'express';
 
 @Controller('todo')
 @UseInterceptors(TransformInterceptor)
@@ -90,6 +91,13 @@ export class TodoController {
       return todo.media.mediaDetail;
     });
     return { message: `get my tv ${status}`, todos, results, page: query.page };
+  }
+
+  @Get('random/movie')
+  async randomMovie(@Query('qty') qty: number) {
+    qty = qty || 1;
+    const movies = await this.todoService.randomMyMovie(qty);
+    return { message: 'Random My Movie', movies, qty };
   }
 
   @Get(':id')

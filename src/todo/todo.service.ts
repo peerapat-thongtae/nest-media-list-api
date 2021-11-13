@@ -50,8 +50,6 @@ export class TodoService {
     const TMDB_API_URL = process.env.TMDB_API_URL;
     const TMDB_TOKEN = process.env.TMDB_TOKEN;
 
-    console.log(TMDB_API_URL);
-
     const res = await this.httpService
       .get(`${TMDB_API_URL}/3/${type}/${mediaId}`, {
         headers: {
@@ -114,5 +112,19 @@ export class TodoService {
         return res.media.mediaDetail;
       });
     return tvOnTheAir;
+  }
+
+  async randomMyMovie(qty: number) {
+    const randoms = await this.todosRepository
+      .createQueryBuilder('todo')
+      .leftJoinAndSelect('todo.media', 'media')
+      .orderBy('RANDOM()')
+      .where('media.mediaType = :type', { type: 'movie' })
+      .where('status = :status', { status: 'watchlist' })
+      .limit(qty)
+      .getMany();
+    return randoms.map((res) => {
+      return res;
+    });
   }
 }
