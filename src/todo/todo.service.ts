@@ -120,7 +120,7 @@ export class TodoService {
       .leftJoinAndSelect('todo.media', 'media')
       .orderBy('RANDOM()')
       .where('media.mediaType = :type', { type: 'movie' })
-      .where('status = :status', { status: 'watchlist' })
+      .andWhere('status = :status', { status: 'watchlist' })
       .limit(qty)
       .getMany();
     return randoms.map((res) => {
