@@ -124,7 +124,7 @@ export class TodoService {
       .limit(qty)
       .getMany();
     return randoms.map((res) => {
-      return res;
+      return res.media.mediaDetail;
     });
   }
 }
