@@ -8,6 +8,7 @@ import { Todo } from './entities/todo.entity';
 import { MediaType } from './enum/mediaType.enum';
 import { TodoStatus } from './enum/todoStatus.enum';
 import * as dayjs from 'dayjs';
+import { CheckMediaTodo } from './dto/check-media-todo.dto';
 @Injectable()
 export class TodoService {
   private readonly configService: ConfigService;
@@ -126,5 +127,23 @@ export class TodoService {
     return randoms.map((res) => {
       return res.media.mediaDetail;
     });
+  }
+
+  async checkMediaInTodo(medias: Array<CheckMediaTodo>, userId: number) {
+    const results: Array<Todo> = [];
+    for (let i = 0; i < medias.length; i++) {
+      const findList = await this.todosRepository.findOne({
+        // relations: ['media'],
+        where: {
+          userId: userId,
+          mediaId: medias[i].mediaId,
+        },
+      });
+
+      if (findList) {
+        results.push(findList);
+      }
+    }
+    return results;
   }
 }

@@ -19,6 +19,7 @@ import { AddTodoRequestDto } from './dto/add-todo-request.dto';
 import { MediaType } from './enum/mediaType.enum';
 import { TodoStatus } from './enum/todoStatus.enum';
 import { query } from 'express';
+import { CheckMediaTodo } from './dto/check-media-todo.dto';
 
 @Controller('todo')
 @UseInterceptors(TransformInterceptor)
@@ -94,6 +95,16 @@ export class TodoController {
     qty = qty || 1;
     const movies = await this.todoService.randomMyMovie(qty);
     return { message: 'Random My Movie', movies, qty };
+  }
+
+  @Post('checkmediatodo')
+  @UseGuards(AuthGuard('jwt'))
+  async checkMediaTodo(@Req() request, @Body() medias: Array<CheckMediaTodo>) {
+    const todos = await this.todoService.checkMediaInTodo(
+      medias,
+      request.user.id,
+    );
+    return { message: 'check media in todo', todos, qty: todos.length };
   }
 
   @Get(':id')
