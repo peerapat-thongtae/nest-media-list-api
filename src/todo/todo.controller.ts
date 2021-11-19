@@ -57,9 +57,13 @@ export class TodoController {
       status,
       query,
     );
+    const results = todos.map((todo) => {
+      return todo.media.mediaDetail;
+    });
     return {
       message: `get my movie ${status}`,
       todos,
+      results,
       page: query.page,
     };
   }
