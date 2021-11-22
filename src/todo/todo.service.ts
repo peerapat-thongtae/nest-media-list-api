@@ -70,7 +70,8 @@ export class TodoService {
   ) {
     const page = query.page || 1;
     const skip = (page - 1) * 20;
-    const todos = await this.todosRepository.find({
+
+    const [todos, count] = await this.todosRepository.findAndCount({
       relations: ['media'],
       where: {
         userId: userId,
@@ -85,7 +86,8 @@ export class TodoService {
       take: 20,
       skip: skip,
     });
-    return todos;
+
+    return { todos, count };
   }
 
   findAll() {

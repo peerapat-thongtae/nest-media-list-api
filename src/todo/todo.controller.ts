@@ -18,7 +18,6 @@ import { TransformInterceptor } from 'src/interceptors/transform.interceptor';
 import { AddTodoRequestDto } from './dto/add-todo-request.dto';
 import { MediaType } from './enum/mediaType.enum';
 import { TodoStatus } from './enum/todoStatus.enum';
-import { query } from 'express';
 import { CheckMediaTodo } from './dto/check-media-todo.dto';
 
 @Controller('todo')
@@ -51,19 +50,20 @@ export class TodoController {
     @Query() query,
     @Param('status') status: TodoStatus,
   ) {
-    const todos = await this.todoService.findUserTodoByStatus(
+    const response = await this.todoService.findUserTodoByStatus(
       request.user.id,
       MediaType.MOVIE,
       status,
       query,
     );
-    const results = todos.map((todo) => {
+    const results = response.todos.map((todo) => {
       return todo.media.mediaDetail;
     });
     return {
       message: `get my movie ${status}`,
-      todos,
+      todos: response.todos,
       results,
+      count: response.count,
       page: query.page,
     };
   }
@@ -82,16 +82,22 @@ export class TodoController {
     @Query() query,
     @Param('status') status: TodoStatus,
   ) {
-    const todos = await this.todoService.findUserTodoByStatus(
+    const response = await this.todoService.findUserTodoByStatus(
       request.user.id,
       MediaType.TV,
       status,
       query,
     );
-    const results = todos.map((todo) => {
+    const results = response.todos.map((todo) => {
       return todo.media.mediaDetail;
     });
-    return { message: `get my tv ${status}`, todos, results, page: query.page };
+    return {
+      message: `get my tv ${status}`,
+      todos: response.todos,
+      results,
+      count: response.count,
+      page: query.page,
+    };
   }
 
   @Get('random/movie')
