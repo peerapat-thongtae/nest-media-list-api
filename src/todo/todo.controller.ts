@@ -63,7 +63,7 @@ export class TodoController {
       message: `get my movie ${status}`,
       todos: response.todos,
       results,
-      count: response.count,
+      total_results: response.count,
       page: query.page,
     };
   }
