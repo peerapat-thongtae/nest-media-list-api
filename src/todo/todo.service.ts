@@ -39,6 +39,13 @@ export class TodoService {
     }
   }
 
+  async getAllUserTodo(userId: number) {
+    const todoData = await this.todosRepository.find({
+      where: { userId: userId },
+    });
+    return todoData;
+  }
+
   async findUserTodoAllType(userId: number) {
     const todoData = await this.todosRepository.find({
       relations: ['media'],
