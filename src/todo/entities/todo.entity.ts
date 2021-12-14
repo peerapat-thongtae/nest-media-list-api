@@ -21,7 +21,7 @@ export class Todo {
   @JoinColumn({ name: 'mediaId' })
   media: Media;
 
-  @Column()
+  @Column({ unique: false })
   mediaId: number;
 
   @ManyToOne(() => User, (user) => user.todos)

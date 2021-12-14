@@ -1,5 +1,5 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -23,6 +23,7 @@ export class TodoService {
       const todo = await this.todosRepository.findOne({
         where: { userId: userId, mediaId: addTodoRequestDto.id },
       });
+      console.log(todo);
       if (todo) {
         todo.status = addTodoRequestDto.status;
         await this.todosRepository.save(todo);
@@ -32,10 +33,13 @@ export class TodoService {
       newTodo.mediaId = addTodoRequestDto.id;
       newTodo.userId = userId;
       newTodo.status = addTodoRequestDto.status;
+
+      console.log(newTodo);
       const todoData = await this.todosRepository.save(newTodo);
       return todoData;
     } catch (err) {
       console.log(err);
+      throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
