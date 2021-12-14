@@ -15,7 +15,7 @@ export const databaseProviders = [
         password: '',
         database: 'media-list',
         entities: [User],
-        synchronize: true,
+        synchronize: false,
       }),
       UsersModule,
     ],

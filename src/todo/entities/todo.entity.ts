@@ -17,12 +17,12 @@ export class Todo {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  @Column({ unique: false })
+  mediaId: number;
+
   @OneToOne(() => Media)
   @JoinColumn({ name: 'mediaId' })
   media: Media;
-
-  @Column({ unique: false })
-  mediaId: number;
 
   @ManyToOne(() => User, (user) => user.todos)
   @JoinColumn({ name: 'userId' })
