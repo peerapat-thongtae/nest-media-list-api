@@ -28,17 +28,29 @@ export class UsersService {
       user.firstName = createUserDto.firstName;
       user.lastName = createUserDto.lastName;
       user.gender = createUserDto.gender;
+      user.username = createUserDto.username;
       user.birthday = createUserDto.birthday;
 
       const salt = await genSalt(10);
       user.password = await hash(createUserDto.password, salt);
+
+      if (this.getUserByEmail(user.email)) {
+        throw new HttpException(`${user.email} is exists`, HttpStatus.CONFLICT);
+      }
+
+      if (this.getUserByUsername(user.username)) {
+        throw new HttpException(
+          `${user.username} is exists`,
+          HttpStatus.CONFLICT,
+        );
+      }
 
       const userData = await this.usersRepository.save(user);
 
       const token = await this.signToken(userData);
       return new UserLoginResponseDto(userData, token);
     } catch (err) {
-      throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException('Error !', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -58,6 +70,16 @@ export class UsersService {
   async getUserByEmail(email: string) {
     const user = await this.usersRepository.findOne(
       { email: email },
+      {
+        relations: ['todos'],
+      },
+    );
+    return user;
+  }
+
+  async getUserByUsername(username: string) {
+    const user = await this.usersRepository.findOne(
+      { username: username },
       {
         relations: ['todos'],
       },
