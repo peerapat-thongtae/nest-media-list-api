@@ -55,6 +55,7 @@ export class UsersService {
       const token = await this.signToken(userData);
       return new UserLoginResponseDto(userData, token);
     } catch (err) {
+      console.log(err);
       throw new HttpException('Error !', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
