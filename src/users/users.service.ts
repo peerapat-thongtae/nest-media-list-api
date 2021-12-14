@@ -22,42 +22,37 @@ export class UsersService {
     this.jwtPrivateKey = 'media-list-secret';
   }
   async create(createUserDto: CreateUserDto) {
-    try {
-      const user = new User();
-      user.email = createUserDto.email.trim().toLowerCase();
-      user.firstName = createUserDto.firstName;
-      user.lastName = createUserDto.lastName;
-      user.gender = createUserDto.gender;
-      user.username = createUserDto.username;
-      user.birthday = createUserDto.birthday;
+    const user = new User();
+    user.email = createUserDto.email.trim().toLowerCase();
+    user.firstName = createUserDto.firstName;
+    user.lastName = createUserDto.lastName;
+    user.gender = createUserDto.gender;
+    user.username = createUserDto.username;
+    user.birthday = createUserDto.birthday;
 
-      const salt = await genSalt(10);
-      user.password = await hash(createUserDto.password, salt);
-      console.log(user);
-      const checkUserByEmail = await this.getUserByEmail(user.email);
-      console.log(checkUserByEmail);
-      const checkUserByUsername = await this.getUserByUsername(user.username);
-      console.log(checkUserByUsername);
+    const salt = await genSalt(10);
+    user.password = await hash(createUserDto.password, salt);
+    console.log(user);
+    const checkUserByEmail = await this.getUserByEmail(user.email);
+    console.log(checkUserByEmail);
+    const checkUserByUsername = await this.getUserByUsername(user.username);
+    console.log(checkUserByUsername);
 
-      if (checkUserByEmail) {
-        throw new HttpException(`${user.email} is exists`, HttpStatus.CONFLICT);
-      }
-
-      if (checkUserByUsername) {
-        throw new HttpException(
-          `${user.username} is exists`,
-          HttpStatus.CONFLICT,
-        );
-      }
-
-      const userData = await this.usersRepository.save(user);
-
-      const token = await this.signToken(userData);
-      return new UserLoginResponseDto(userData, token);
-    } catch (err) {
-      console.log(err);
-      throw new HttpException('Error !', HttpStatus.INTERNAL_SERVER_ERROR);
+    if (checkUserByEmail) {
+      throw new HttpException(`${user.email} is exists`, HttpStatus.CONFLICT);
     }
+
+    if (checkUserByUsername) {
+      throw new HttpException(
+        `${user.username} is exists`,
+        HttpStatus.CONFLICT,
+      );
+    }
+
+    const userData = await this.usersRepository.save(user);
+
+    const token = await this.signToken(userData);
+    return new UserLoginResponseDto(userData, token);
   }
 
   async getUser(id: string) {
