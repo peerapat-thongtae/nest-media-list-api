@@ -33,12 +33,11 @@ export class UsersService {
 
       const salt = await genSalt(10);
       user.password = await hash(createUserDto.password, salt);
-      console.log(this.getUserByEmail(user.email));
-      if (this.getUserByEmail(user.email)) {
+      if (await this.getUserByEmail(user.email)) {
         throw new HttpException(`${user.email} is exists`, HttpStatus.CONFLICT);
       }
 
-      if (this.getUserByUsername(user.username)) {
+      if (await this.getUserByUsername(user.username)) {
         throw new HttpException(
           `${user.username} is exists`,
           HttpStatus.CONFLICT,
