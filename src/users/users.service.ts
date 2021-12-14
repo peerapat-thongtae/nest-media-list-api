@@ -35,6 +35,7 @@ export class UsersService {
       user.password = await hash(createUserDto.password, salt);
 
       if (this.getUserByEmail(user.email)) {
+        console.log(user.email);
         throw new HttpException(`${user.email} is exists`, HttpStatus.CONFLICT);
       }
 
