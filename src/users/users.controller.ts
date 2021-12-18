@@ -56,8 +56,16 @@ export class UsersController {
     return this.usersService.findOne(+id);
   }
 
+  @Patch('me')
+  @UseGuards(AuthGuard('jwt'))
+  async updateMe(@Body() updateUserDto: UpdateUserDto, @Req() request) {
+    const user = await this.usersService.update(request.user.id, updateUserDto);
+    return { message: 'Update My User', user };
+  }
+
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+  @UseGuards(AuthGuard('jwt'))
+  updateUser(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(+id, updateUserDto);
   }
 

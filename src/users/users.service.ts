@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { compare, genSalt, hash } from 'bcrypt';
 import { sign } from 'jsonwebtoken';
@@ -55,7 +55,7 @@ export class UsersService {
     return new UserLoginResponseDto(userData, token);
   }
 
-  async getUser(id: string) {
+  async getUser(id: string | number) {
     const user = await this.usersRepository.findOne(id, {
       relations: ['todos'],
     });
@@ -120,8 +120,10 @@ export class UsersService {
     return `This action returns a #${id} user`;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    await this.usersRepository.update({ id: id }, updateUserDto);
+    const user = this.getUser(id);
+    return user;
   }
 
   remove(id: number) {
