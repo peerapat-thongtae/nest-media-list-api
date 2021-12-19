@@ -121,6 +121,20 @@ export class UsersService {
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
+    const findByEmail = await this.getUserByEmail(updateUserDto.email);
+    if (findByEmail && findByEmail.id !== id) {
+      throw new HttpException(
+        `E-mail : ${updateUserDto.email} is exists`,
+        HttpStatus.CONFLICT,
+      );
+    }
+    const findByUsername = await this.getUserByUsername(updateUserDto.username);
+    if (findByUsername && findByUsername.id !== id) {
+      throw new HttpException(
+        `Username : ${updateUserDto.username} is exists`,
+        HttpStatus.CONFLICT,
+      );
+    }
     await this.usersRepository.update({ id: id }, updateUserDto);
     const user = this.getUser(id);
     return user;
